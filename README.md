@@ -1,104 +1,117 @@
 # Saldo
 
-Aplicação front-end de demonstração para portefólio júnior, com interface em português de Portugal. Movimentos fictícios, câmbios de uma API pública e sem autenticação.
+A personal finance dashboard built with React, JavaScript and CSS.
 
-## Executar
+I chose personal finance as the focus of this portfolio project because it brings together data, everyday decisions and interface design. The dashboard presents income, expenses and monthly balance in one place, with filters for exploring individual transactions.
 
-Requisitos: Node.js 22.12+ (testado com Node 24), npm e navegador moderno com suporte a `dialog`, `crypto.randomUUID` e localStorage.
+**[Live demo](https://saldo-sand.vercel.app)** · **[Source code](https://github.com/anabrito23/Saldo)**
+
+## Features
+
+- Monthly overview of income, expenses, balance and savings rate.
+- Six-month chart comparing income and expenses.
+- Spending breakdown by category.
+- Form for adding transactions and an option to delete them.
+- Transaction search and category filters.
+- CSV export of the filtered transactions.
+- Browser-local persistence with localStorage.
+- Currency converter using the Frankfurter API, with loading, error and retry states.
+- Responsive layouts, labelled form controls and visible keyboard focus.
+
+## Technologies
+
+- React for the interface and state management.
+- JavaScript for calculations, filtering and application behaviour.
+- HTML and JSX for the page structure.
+- CSS for styling and responsive layouts.
+- Vite for local development and production builds.
+- Git and GitHub for version control.
+- Vercel for hosting.
+
+## Run locally
+
+Use Node.js 24 and npm.
 
 ```sh
+git clone https://github.com/anabrito23/Saldo.git
+cd Saldo
 npm ci
 npm run dev
 ```
 
-Abrir o endereço apresentado no terminal. Para produção:
+Open the local address shown in the terminal.
+
+To run the domain tests:
 
 ```sh
 npm test
+```
+
+To build and preview the production version:
+
+```sh
 npm run build
 npm run preview
 ```
 
-O build gera `dist/`. `npm run preview` serve o resultado da compilação; não é servidor de produção.
+## UX/UI decisions
 
-## Funcionalidades
+The overview puts the main financial figures first, followed by charts and individual transactions. A muted green palette and clear spacing help keep the interface calm and readable.
 
-Dashboard mensal com saldo, receitas, despesas e taxa de poupança; gráfico dos últimos seis meses; distribuição de despesas; criação e eliminação de movimentos; pesquisa e filtro por categoria; exportação dos resultados visíveis em CSV compatível com Excel.
+The month selector controls the dashboard summary. Search and category filters affect the transaction list and CSV export, so users can explore specific records while retaining the wider monthly context.
 
-Os dados de exemplo usam datas relativas à primeira abertura. As alterações são persistidas em `localStorage` com a chave `saldo-v1`. Dados incompatíveis ou inválidos são substituídos pela demonstração. Se o navegador bloquear o armazenamento, é apresentado um aviso e a aplicação continua em memória. Para repor a demonstração, eliminar apenas essa chave nas ferramentas do navegador e recarregar a página. Não guardar dados sensíveis: os dados não são encriptados nem sincronizados.
+Amounts use Portuguese formatting and euros. The savings rate is calculated as `(income − expenses) / income`; months without income display 0%.
 
-## Decisões de UX/UI
+Forms use visible labels and native validation. Dialogs support Escape and return focus to their opening control. The charts include a textual description for assistive technology. These choices support accessibility, but the project has not undergone a full accessibility audit.
 
-Paleta verde e fundo suave para transmitir clareza e tranquilidade. Os indicadores respondem ao mês selecionado; pesquisa e categoria afetam a lista e a exportação, preservando a visão global do mês. Barras agrupadas permitem comparar receitas e despesas. O resumo textual acessível do gráfico comunica os mesmos valores. Montantes apresentados com formatação pt-PT e EUR. A taxa de poupança é (receitas − despesas) / receitas; sem receitas é 0%, podendo ser negativa quando há défice.
+## Project structure
 
-Layout responsivo, HTML semântico, link para saltar navegação, nomes acessíveis nos controlos, foco visível e mensagens de estado com `role="status"`. Os formulários usam labels e validação nativa; diálogos modais suportam Escape e devolvem o foco ao botão de abertura. A eliminação exige confirmação. Tipografia de sistema, sem dependência de fontes externas.
-
-## Arquitetura e decisões técnicas
-
-- React com componentes funcionais e estado derivado; sem Redux para evitar complexidade desnecessária.
-- Vite para desenvolvimento e build estático, CSS próprio para controlo da identidade visual.
-- `src/App.jsx`: interface, filtros e operações de utilizador.
-- `src/model.js`: dados de demonstração, validação e regras puras.
-- `src/useStorage.js`: persistência e recuperação segura de falhas de leitura/escrita.
-- `src/model.test.js`: testes de regras de domínio com o runner nativo do Node.
-- Ícones SVG locais, sem dependências adicionais; ícones decorativos acompanham rótulos legíveis.
-
-Não há backend, múltiplos utilizadores, sincronização entre separadores nem mecanismo de migração de versões. A validação do cliente é adequada a uma demonstração local; um produto com servidor precisaria de validação e autorização no servidor.
-
-## Publicar no GitHub
-
-Criar um repositório vazio no GitHub e executar nesta pasta (substituir o URL pelo teu):
-
-```sh
-git init
-git add .
-git commit -m "feat: implementar Saldo com persistência local"
-git branch -M main
-git remote add origin https://github.com/TEU-UTILIZADOR/saldo.git
-git push -u origin main
+```text
+src/
+├── App.jsx           # Dashboard, forms and filters
+├── Exchange.jsx      # Currency converter and API requests
+├── model.js          # Demo data, validation and calculations
+├── model.test.js     # Domain tests
+├── useStorage.js     # localStorage persistence
+├── icons.jsx         # Local SVG icons
+├── main.jsx          # React entry point
+└── style.css         # Styles and responsive layouts
 ```
 
-Não incluir `node_modules` nem `dist` no commit. O ficheiro `package-lock.json` garante instalações reproduzíveis. A configuração em `.github/workflows/ci.yml` executa os testes e a compilação em cada push e pull request.
+## Data and API
 
-## Deploy
+The dashboard starts with fictional transactions for demonstration. Transactions remain in the current browser and are not sent to a server. There is no bank connection, login or cross-device synchronisation.
 
-### Vercel ou Netlify
+The currency converter uses the [Frankfurter API](https://frankfurter.dev/). It shows the reference rate date, requires an internet connection and does not include bank fees. Conversions do not change the dashboard's euro transactions.
 
-1. Importar o repositório no painel da plataforma.
-2. Framework/preset: Vite. Build command: `npm run build`. Output/publish directory: `dist`.
-3. Instalação: `npm ci`. Versão de Node: 24. Não são necessárias variáveis de ambiente.
-4. Publicar. Como não há rotas no servidor, não é necessário fallback de SPA.
+To reset the demo, remove the `saldo-v1` key from localStorage in the browser's developer tools and reload the page.
 
-Se publicares o conjunto num único repositório, definir Root/Base Directory como `saldo`. Em Netlify, `netlify.toml` já declara o build e a pasta de saída para repositório independente.
+## Deployment
 
-### GitHub Pages
+Import the repository into Vercel with these settings:
 
-Para um endereço `https://UTILIZADOR.github.io/REPOSITORIO/`, compilar com `npm run build -- --base=/REPOSITORIO/` e publicar o conteúdo de `dist` através de um workflow de Pages ou branch dedicada. Para domínio próprio ou página raiz, usar o build normal. O `base` precisa de corresponder ao caminho real.
+| Setting | Value |
+| --- | --- |
+| Framework preset | Vite |
+| Root directory | Repository root |
+| Build command | `npm run build` |
+| Output directory | `dist` |
 
-## Verificação manual antes de apresentar
+No environment variables are required.
 
-- Testar a 375 px, 768 px e 1440 px, com zoom a 200%.
-- Percorrer todos os controlos com Tab, abrir/fechar o diálogo com teclado e confirmar o retorno de foco.
-- Criar registo, alterar filtros, recarregar e confirmar persistência; eliminar com confirmação.
-- Testar lista vazia e bloqueio de armazenamento no navegador.
-- Conferir totais com movimentos conhecidos, mudar mês e abrir CSV exportado.
+## Next steps
 
-Os testes automáticos cobrem regras de domínio; não substituem uma auditoria de acessibilidade, testes de leitores de ecrã ou testes end-to-end.
+- Add transaction editing.
+- Introduce monthly category budgets.
+- Add CSV import with validation.
+- Expand interaction tests and test the interface with users.
 
-## Apresentação no portefólio
+## Author
 
-Apresenta o problema, demonstra um fluxo completo, explica duas decisões de UX e identifica as limitações. Personaliza o projeto, documenta as tuas alterações em commits e descreve honestamente o apoio de ferramentas de IA. Não apresentar dados fictícios como resultados de utilizadores reais.
+**Ana Brito** — Lisbon, Portugal
 
-Sugestões de evolução: orçamentos por categoria, edição de movimentos, importação CSV e testes de integração.
+[GitHub](https://github.com/anabrito23)
 
-## Licença
+## License
 
-MIT. Ver `LICENSE`. Os dados fictícios são incluídos apenas para demonstração.
-
-## Integração real de API
-
-`Exchange.jsx` consulta `https://api.frankfurter.dev/v2/rate/eur/{moeda}`. Documentação: https://frankfurter.dev/. A conversão multiplica o montante pela taxa recebida; não altera os movimentos em EUR. Implementa carregamento, erro, tentativa manual, timeout de 10 segundos, cancelamento ao desmontar/mudar de moeda e validação da resposta. Só o par cambial é enviado; os movimentos não são enviados. Requer ligação à Internet; o resto do dashboard funciona sem a API. A data da taxa aparece no resultado e não se promete câmbio em tempo real.
-
-## Verificação realizada nesta entrega
-
-Compilação de produção concluída com Vite 8.0.8, React 19.2.5 e Node 24.20.0. Os três testes de domínio deste projeto passaram. Não foi possível abrir o servidor local no ambiente de entrega (bloqueio de portas), pelo que a verificação visual, a navegação por teclado e a chamada real da API no navegador ficam por executar com a lista manual acima. Não se afirma conformidade WCAG auditada.
+MIT. See [LICENSE](LICENSE).
