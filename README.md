@@ -60,7 +60,7 @@ The overview puts the main financial figures first, followed by charts and indiv
 
 The month selector controls the dashboard summary. Search and category filters affect the transaction list and CSV export, so users can explore specific records while retaining the wider monthly context.
 
-Amounts use Portuguese formatting and euros. The savings rate is calculated as `(income − expenses) / income`; months without income display 0%.
+Amounts use English (UK) formatting and euros. The savings rate is calculated as `(income − expenses) / income`; months without income display 0%.
 
 Forms use visible labels and native validation. Dialogs support Escape and return focus to their opening control. The charts include a textual description for assistive technology. These choices support accessibility, but the project has not undergone a full accessibility audit.
 
